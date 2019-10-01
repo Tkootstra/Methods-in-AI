@@ -43,25 +43,7 @@ def vectorizeSentence(wordlist):
 
     return mask
 
-#def sampleWordContext()
-
-
-    
-
-    
-#    minValue = min(listvalues)
-#    if minValue>=3:
-#        return("null")
-#    
-#    wordMatches = []
-#    i = 0
-#    for index in listvalues:
-#        if index==minValue:
-#           wordMatches.append(wordList[i])
-#        i = i+1
-#    
-#    import random
-#    return(wordMatches[random.randrange(len(wordMatches))])
+random.randrange(len(wordMatches))])
 
 # =============================================================================
 # vectorize all known input words found in data
@@ -113,15 +95,7 @@ priceUniques = list(rest_info['pricerange'].unique())
 areaUniques = list(rest_info['area'].unique())[:5]
    
 
-#print('welcome to restaurant chatbot 0.1. How can I help you?')
-#print('input inform type dialog act')
-#currentUserInput = input()
-#userInputVectorized = vectorizeSentence(currentUserInput.lower().split())
-#dialogActPred = model.predict(userInputVectorized.reshape(1,-1))[0]
-##if dialogActPred == 'inform':
-#    
-#    
-#    
+  
 ##    check alle keywords
     
 testSentences =["I'm looking for world food",
@@ -143,19 +117,6 @@ testSentences =["I'm looking for world food",
 
 stopwords = stop_words = list(set(stopwords.words('english')))
 stop_words.append('want')
-#def matchPref(sentence, keywords=list):
-#    allWords = [word.lower() for word in sentence.split() if word.lower() not in stop_words]
-#    print(allWords)
-#    wordsToCheck = None
-#    for i in range(len(allWords)):
-#        word = allWords[i]
-#        if word in keywords:
-#            wordsToCheck = allWords[i-2:i+2]
-#    print(wordsToCheck)
-#    if wordsToCheck == None:
-#        return None
-#    preference = matchKeyWord(wordsToCheck, keywords)
-#    return preference
 
 def levSteinWordMatch(inputWord, possibleCandidates):
     
@@ -200,7 +161,6 @@ def matchPref(sentence, keywords=list):
     if 'world' in allWords and 'food' in sentence and 'international' in keywords:
         return 'international'
     
-    wordsToCheck = None
     preference = 'missing'
     for i in range(len(allWords)):
         word = allWords[i]
@@ -215,7 +175,28 @@ def matchPref(sentence, keywords=list):
 def matchPrefFood(sentence, keywords=list):
     allWords_copy = [word.lower() for word in sentence.split()]
     allWords = [word for word in allWords_copy if word not in stopwords]
-#    print(allWords)
+    
+# =============================================================================
+#     some food preferences are composed of two words, handle those as edge cases
+# =============================================================================
+    for k in range(len(allWords)-1):
+        bigram = allWords[k] + ' '  + allWords[k+1]
+        for word in keywords:
+            if bigram == word:
+                try:
+                    return word, allWords[k-1]
+                except IndexError:
+                    pass
+            levSteinWord = levSteinWordMatch(bigram, keywords)
+            if levSteinWord == word:
+                try:
+                    return word, allWords[k-1]
+                except IndexError:
+                    pass
+# =============================================================================
+#   normal cases
+# =============================================================================
+    
     inputPreference = 'missing'
     #    edge cases
     
@@ -235,17 +216,6 @@ def matchPrefFood(sentence, keywords=list):
     return preference, inputPreference
 
 
-for sentence in testSentences:
-    print('test sentence: '+sentence)
-    foodPref, input_ = matchPrefFood(sentence, foodUniques)
-    pricePref = matchPref(sentence, priceUniques)
-    areaPref = matchPref(sentence, areaUniques)
-    if foodPref == 'missing':
-        print('no restaurants found for keyword : {}'.format(input_))
-#    print(sentence)
-    print('food preference": {}, price preference: {}, area preference:{}'.format(foodPref, pricePref, areaPref))
-    print('. ')
-    
 
 def getInformation(sentence):
     foodPref, input_ = matchPrefFood(sentence, foodUniques)
@@ -259,8 +229,19 @@ def getInformation(sentence):
 
 
     
-    
-        
+#    
+#
+#for sentence in testSentences:
+#    print('test sentence: '+sentence)
+#    foodPref, input_ = matchPrefFood(sentence, foodUniques)
+#    pricePref = matchPref(sentence, priceUniques)
+#    areaPref = matchPref(sentence, areaUniques)
+#    if foodPref == 'missing':
+#        print('no restaurants found for keyword : {}'.format(input_))
+##    print(sentence)
+#    print('food preference": {}, price preference: {}, area preference:{}'.format(foodPref, pricePref, areaPref))
+#    print('. ')
+#            
         
     
     
