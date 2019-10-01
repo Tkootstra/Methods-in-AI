@@ -9,7 +9,7 @@ Created on Tue Sep 24 12:53:06 2019
 # imports
 # =============================================================================
 import pandas as pd
-from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 from sklearn.model_selection import train_test_split
 import pickle 
@@ -91,7 +91,7 @@ all_features = pd.DataFrame(all_features)
 all_features['label'] = full_data['dialog_act']
 all_features = all_features.dropna()
 # =============================================================================
-# load trained neural net into memory for making predictions
+# load trained classifier model into memory for making predictions
 # =============================================================================
 
 filename = 'finalized_model.sav'
@@ -170,7 +170,7 @@ def levSteinWordMatch(inputWord, possibleCandidates):
     if type(candidates) == str:
         return candidates
     else:
-        return candidates[0]
+        return str(np.random.choice(candidates, size=1)[0])
 
 
 def matchKeyWord(sentence, keywords=list):
