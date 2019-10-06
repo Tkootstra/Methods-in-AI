@@ -5,7 +5,7 @@ import pickle
 from sklearn.neural_network import MLPClassifier
 from nltk.corpus import stopwords
 import numpy as np
-
+import analytics
 
 
 filename = 'finalized_model.sav'
@@ -209,7 +209,7 @@ def check_knowledge():
 
   transition = None
 
-  if getDialogAct(user_utterance) == "bye":
+  if getDialogActMachineLearning(user_utterance) == "bye":
    # The user asked to shut down the system.
    setState("end")
   else:
@@ -238,7 +238,7 @@ checks["knowledge"] = check_knowledge
 def check_detailsQuestion():
   global user_utterance
 
-  dialogAct = getDialogAct(user_utterance)
+  dialogAct = getDialogActMachineLearning(user_utterance)
   if dialogAct == "bye":
     # The user asked to shut down the system.
     setState("end")
